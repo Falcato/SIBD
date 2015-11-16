@@ -73,7 +73,7 @@ create table wears
     wears_end date,
     wears_patient numeric(20),
     wears_pan varchar(255),
-    primary key(wears_start, wears_end, wears_patient, wears_pan),
+    primary key(wears_start, wears_end, wears_patient),
     foreign key(wears_start, wears_end) references period(period_start, period_end),
     foreign key(wears_patient) references patient(patient_number),
     foreign key(wears_pan) references pan(pan_domain));
@@ -83,7 +83,7 @@ create table lives
     lives_end date,
     lives_patient numeric(20),
     lives_muni numeric(20),
-    primary key(lives_start, lives_end, lives_patient, lives_muni),
+    primary key(lives_start, lives_end, lives_patient),
     foreign key(lives_start, lives_end) references period(period_start, period_end),
     foreign key(lives_patient) references patient(patient_number),
     foreign key(lives_muni) references municipality(municipality_nut4code));
@@ -94,8 +94,25 @@ create table connects
     connects_snum numeric(20),
     connects_manuf varchar(255),
     connects_pan varchar(255),
-    primary key(connects_start, connects_end, connects_snum, connects_manuf, connects_pan),
+    primary key(connects_start, connects_end, connects_snum, connects_manuf),
     foreign key(connects_start, connects_end) references period(period_start, period_end),
     foreign key(connects_snum, connects_manuf) references device(device_serialnum, device_manufacturer),
     foreign key(connects_pan) references pan(pan_domain));
 
+
+
+delimiter $$
+
+create trigger check_overlapping_periods before update on wears
+for each row
+begin
+
+	if new.wears_pan = wears_pan and new.wears_start < wears_end then
+		
+		call pan_already_in_use();
+		
+	end if;
+
+end$$
+
+delimiter ;
