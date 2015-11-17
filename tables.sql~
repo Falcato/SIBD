@@ -73,7 +73,7 @@ create table wears
     wears_end date,
     wears_patient numeric(20),
     wears_pan varchar(255),
-    primary key(wears_start, wears_end, wears_patient, wears_pan),
+    primary key(wears_start, wears_end, wears_patient),
     foreign key(wears_start, wears_end) references period(period_start, period_end),
     foreign key(wears_patient) references patient(patient_number),
     foreign key(wears_pan) references pan(pan_domain));
@@ -83,7 +83,7 @@ create table lives
     lives_end date,
     lives_patient numeric(20),
     lives_muni numeric(20),
-    primary key(lives_start, lives_end, lives_patient, lives_muni),
+    primary key(lives_start, lives_end, lives_patient),
     foreign key(lives_start, lives_end) references period(period_start, period_end),
     foreign key(lives_patient) references patient(patient_number),
     foreign key(lives_muni) references municipality(municipality_nut4code));
@@ -94,9 +94,77 @@ create table connects
     connects_snum numeric(20),
     connects_manuf varchar(255),
     connects_pan varchar(255),
-    primary key(connects_start, connects_end, connects_snum, connects_manuf, connects_pan),
+    primary key(connects_start, connects_end, connects_snum, connects_manuf),
     foreign key(connects_start, connects_end) references period(period_start, period_end),
     foreign key(connects_snum, connects_manuf) references device(device_serialnum, device_manufacturer),
     foreign key(connects_pan) references pan(pan_domain));
 
-insert into patient values (7, 'Tomás Costa', 'Rosa Damasceno');
+
+
+delimiter $$
+
+create trigger check_overlapping_periods_wears_insert before insert on wears
+for each row
+begin
+
+	if new.wears_pan in (select wears_pan from wears where new.wears_pan = wears_pan)
+	 and new.wears_start < some (select wears_end from wears
+	 where new.wears_pan = wears_pan) then
+		
+		call pan_already_in_use();
+		
+	end if;
+
+end$$
+
+create trigger check_overlapping_periods_wears_update before update on wears
+for each row
+begin
+
+	if new.wears_start < some (select wears_end from wears
+	 where wears_pan = new.wears_pan) then
+		
+		call pan_already_in_use();
+		
+	end if;
+
+end$$
+
+create trigger check_overlapping_periods_connects_insert before insert on connects
+for each row
+begin
+
+	if new.connects_pan in (select connects_pan from connects where new.connects_pan = connects_pan)
+	 and new.connects_start < some (select connects_end from connects
+	 where new.connects_pan = connects_pan) then
+		
+		call pan_already_in_use();
+		
+	end if;
+
+end$$
+
+create trigger check_overlapping_periods_connects_update before update on connects
+for each row
+begin
+
+	if new.connects_pan = (select connects_pan from connects) and new.connects_start < (select connects_end from connects) then
+		
+		call pan_already_in_use();
+		
+	end if;
+
+end$$
+
+delimiter ;
+
+insert into patient values (1, 'ricky', 'fonte da vaca');
+insert into patient values (2, 'ze', 'almada');
+insert into period values ('2015-11-21', '2015-11-25');
+insert into period values ('2015-11-22', '2015-11-26');
+/*insert into period values ('2015-11-17', '2015-11-20');*/
+insert into pan values ('pan1', 999);
+insert into pan values ('pan2', 999);
+insert into wears values ('2015-11-10', '2015-11-16', 1, 'pan1');
+insert into wears values ('2015-11-15', '2015-11-20', 2, 'pan1');
+insert into wears values ('2015-11-17', '2015-11-20', 2, 'pan1');

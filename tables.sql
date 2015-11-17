@@ -103,11 +103,52 @@ create table connects
 
 delimiter $$
 
-create trigger check_overlapping_periods before insert on wears
+create trigger check_overlapping_periods_wears_insert before insert on wears
 for each row
 begin
 
-	if new.wears_pan = (select wears_pan from wears) and new.wears_start < (select wears_end from wears) then
+	if new.wears_pan in (select wears_pan from wears where new.wears_pan = wears_pan)
+	 and new.wears_start < some (select wears_end from wears
+	 where new.wears_pan = wears_pan) then
+		
+		call pan_already_in_use();
+		
+	end if;
+
+end$$
+
+create trigger check_overlapping_periods_wears_update before update on wears
+for each row
+begin
+
+	if new.wears_start < some (select wears_end from wears
+	 where wears_pan = new.wears_pan) then
+		
+		call pan_already_in_use();
+		
+	end if;
+
+end$$
+
+create trigger check_overlapping_periods_connects_insert before insert on connects
+for each row
+begin
+
+	if new.connects_pan in (select connects_pan from connects where new.connects_pan = connects_pan)
+	 and new.connects_start < some (select connects_end from connects
+	 where new.connects_pan = connects_pan) then
+		
+		call pan_already_in_use();
+		
+	end if;
+
+end$$
+
+create trigger check_overlapping_periods_connects_update before update on connects
+for each row
+begin
+
+	if new.connects_pan = (select connects_pan from connects) and new.connects_start < (select connects_end from connects) then
 		
 		call pan_already_in_use();
 		
@@ -119,8 +160,11 @@ delimiter ;
 
 insert into patient values (1, 'ricky', 'fonte da vaca');
 insert into patient values (2, 'ze', 'almada');
-insert into period values ('2015-11-10', '2015-11-16');
-insert into period values ('2015-11-17', '2015-11-20');
+insert into period values ('2015-11-21', '2015-11-25');
+insert into period values ('2015-11-22', '2015-11-26');
+/*insert into period values ('2015-11-17', '2015-11-20');*/
 insert into pan values ('pan1', 999);
-insert into wears values ('2015-11-10', '2015-11-16', 1, 'pan1');
-insert into wears values ('2015-11-17', '2015-11-20', 2, 'pan1');
+insert into pan values ('pan2', 999);
+insert into wears values ('2015-11-21', '2015-11-25', 1, 'pan2');
+insert into wears values ('2015-11-22', '2015-11-26', 2, 'pan1');
+/*insert into wears values ('2015-11-17', '2015-11-20', 2, 'pan1');*/
