@@ -158,37 +158,13 @@ end$$
 
 delimiter ;
 
-
-
-
-
 insert into patient values (1, 'ricky', 'fonte da vaca');
 insert into patient values (2, 'ze', 'almada');
-insert into patient values (3, 'tomas', 'alameda');
-insert into patient values (4, 'nabais', 'telheiras');
-insert into period values ('2014-11-21', '2014-11-25');
-insert into period values ('2015-11-10', '2015-11-12');
-insert into device values (11,'rip curl', 'blood pressure');
-insert into device values (22,'billabong', 'insulin pump');
-insert into device values (33,'quicksilver', 'prancha de surf');
-insert into sensor values (11,'rip curl', 'mm Hg');
-
-/* Criei o ze ligado ao pan1, pan1 ligado ao blood_pressure.*/
+insert into period values ('2015-11-21', '2015-11-25');
+insert into period values ('2015-11-22', '2015-11-26');
 /*insert into period values ('2015-11-17', '2015-11-20');*/
 insert into pan values ('pan1', 999);
 insert into pan values ('pan2', 999);
-insert into wears values ('2014-11-21', '2014-11-25', 1, 'pan2');
-insert into wears values ('2015-11-10', '2015-11-12', 2, 'pan1');
-insert into connects values ('2015-11-10', '2015-11-12', 11, 'rip curl', 'pan1');
-insert into connects values ('2014-11-21', '2014-11-25', 11, 'rip curl', 'pan2');
-insert into reading values (11, 'rip curl','2015-11-11 00:00:01' , '10');
-insert into reading values (11, 'rip curl','2015-11-11 00:30:00' , '11');
-insert into reading values (11, 'rip curl','2015-11-11 01:00:00' , '12');
-insert into reading values (11, 'rip curl','2015-11-11 06:00:00' , '9');
-insert into reading values (11, 'rip curl','2014-11-23 15:00:00' , '100');
+insert into wears values ('2015-11-21', '2015-11-25', 1, 'pan2');
+insert into wears values ('2015-11-22', '2015-11-26', 2, 'pan1');
 /*insert into wears values ('2015-11-17', '2015-11-20', 2, 'pan1');*/
-
-select *
-from reading
-where (select patient_number from patient where patient_number=2) 
-and (select description from device where description='blood pressure') and (select device_serialnum from device, sensor where device_serialnum = sensor.sensor_snum);

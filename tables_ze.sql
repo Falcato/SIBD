@@ -191,4 +191,5 @@ insert into reading values (11, 'rip curl','2014-11-23 15:00:00' , '100');
 select *
 from reading
 where (select patient_number from patient where patient_number=2) 
-and (select description from device where description='blood pressure') and (select device_serialnum from device, sensor where device_serialnum = sensor.sensor_snum);
+and (select description from device where description='blood pressure')
+and (select device_serialnum from device, sensor where device_serialnum = sensor.sensor_snum);
