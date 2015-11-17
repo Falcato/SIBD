@@ -103,11 +103,11 @@ create table connects
 
 delimiter $$
 
-create trigger check_overlapping_periods before update on wears
+create trigger check_overlapping_periods before insert on wears
 for each row
 begin
 
-	if new.wears_pan = wears_pan and new.wears_start < wears_end then
+	if new.wears_pan = (select wears_pan from wears) and new.wears_start < (select wears_end from wears) then
 		
 		call pan_already_in_use();
 		
@@ -116,3 +116,11 @@ begin
 end$$
 
 delimiter ;
+
+insert into patient values (1, 'ricky', 'fonte da vaca');
+insert into patient values (2, 'ze', 'almada');
+insert into period values ('2015-11-10', '2015-11-16');
+insert into period values ('2015-11-17', '2015-11-20');
+insert into pan values ('pan1', 999);
+insert into wears values ('2015-11-10', '2015-11-16', 1, 'pan1');
+insert into wears values ('2015-11-17', '2015-11-20', 2, 'pan1');
