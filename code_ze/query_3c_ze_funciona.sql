@@ -55,15 +55,14 @@ select * from device;
 
 /* Query c): Que fabricantes tiveram dispositivos, balanças, utilizados no ultimo ano?*/
 
-select distinct device_manufacturer /* DIstinct porque para uma marca existem aparelhos diferentes com wears_end dates diferentes no ultimo ano */
+select distinct device_manufacturer /* Distinct porque para uma marca existem aparelhos diferentes com wears_end dates diferentes no ultimo ano */
 from device
 	join connects
 	join pan
 		on pan_domain = connects_pan
 	join wears
 		on wears_pan = pan_domain
-where description = 'scale'
+where description like 'scale'
 and connects_manuf = device_manufacturer
 and connects_snum = device_serialnum
-and wears_end > DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
-
+and wears_end > DATE_SUB(CURDATE(), INTERVAL 12 MONTH);

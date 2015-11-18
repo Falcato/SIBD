@@ -84,11 +84,11 @@ from reading
 	join patient
 		on wears_patient = patient_number
 
-where description='blood pressure'
+where description like 'blood pressure'
 and date(reading_datetime) > DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
 and reading_snum = device_serialnum
 and reading_manuf = device_manufacturer	
 and connects_manuf = device_manufacturer
 and connects_snum = device_serialnum 
 and sensor_manuf = device_manufacturer
-and sensor_snum = device_serialnum
+and sensor_snum = device_serialnum;
