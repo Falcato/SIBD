@@ -19,6 +19,8 @@ insert into connects values ('2015-11-10', '2015-11-12', 11, 'Philips', 'pan1');
 
 /* Base para query b) */
 insert into device values (44,'Philips', 'prancha de bodyboard');
+insert into device values (12,'Philips', 'prancha de bodyboard2');
+insert into device values (13,'Philips', 'prancha de bodyboard3');
 insert into pan values ('pan3', 993);
 insert into pan values ('pan4', 994);
 insert into period values ('2015-12-02', '2999-11-12');
@@ -33,14 +35,15 @@ insert into lives values ('2015-12-02', '2999-11-12', 2, 2222);
 insert into lives values ('2015-12-03', '2999-11-12', 3, 3333);
 insert into lives values ('2015-12-04', '2999-11-12', 4, 3333);
 insert into connects values ('2015-12-01', '2999-11-12', 11, 'Philips', 'pan1');
+insert into connects values ('2015-12-01', '2999-11-12', 12, 'Philips', 'pan1');
+insert into connects values ('2015-12-01', '2999-11-12', 13, 'Philips', 'pan1');
 insert into connects values ('2015-12-02', '2999-11-12', 22, 'billabong', 'pan2');
 insert into connects values ('2015-12-03', '2999-11-12', 33, 'Philips', 'pan3');
 insert into connects values ('2015-12-04', '2999-11-12', 44, 'Philips', 'pan4');
-
-/*insert into wears values ('2015-12-01', '2999-11-12', 1, 'pan1');
+insert into wears values ('2015-12-01', '2999-11-12', 1, 'pan1');
 insert into wears values ('2015-12-02', '2999-11-12', 2, 'pan2');
 insert into wears values ('2015-12-03', '2999-11-12', 3, 'pan3');
-insert into wears values ('2015-12-04', '2999-11-12', 4, 'pan4');*/
+insert into wears values ('2015-12-04', '2999-11-12', 4, 'pan4');
 
 
 
