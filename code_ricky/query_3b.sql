@@ -50,10 +50,11 @@ insert into wears values ('2015-12-04', '2999-11-12', 4, 'pan4');
 /* Query b): Que concelho tem o maior numero de dispositivos da marca Philips activos*/
 
 select lives_muni
-from municipality, period, connects, lives
+from municipality, period, connects, lives, wears
 where connects_manuf = 'Philips'
 and connects_end like '%2999%'
-and connects_end = lives_end
+
+and wears_patient = lives_patient
 group by lives_muni
 order by count(lives_muni) desc 
 limit 1;
