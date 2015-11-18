@@ -19,8 +19,13 @@ insert into connects values ('2015-11-10', '2015-11-12', 11, 'Philips', 'pan1');
 
 /* Base para query b) */
 insert into device values (44,'Philips', 'prancha de bodyboard');
-insert into device values (12,'Philips', 'prancha de bodyboard2');
-insert into device values (13,'Philips', 'prancha de bodyboard3');
+insert into device values (55,'Philips', 'prancha de bodyboard2');
+insert into device values (66,'Philips', 'prancha de bodyboard3');
+insert into device values (77,'Philips', 'prancha de bodyboard4');
+insert into device values (88,'Philips', 'prancha de bodyboard5');
+insert into device values (99,'Philips', 'prancha de bodyboard6');
+insert into device values (12,'Philips', 'prancha de bodyboard7');
+insert into device values (13,'Philips', 'prancha de bodyboard8');
 insert into pan values ('pan3', 993);
 insert into pan values ('pan4', 994);
 insert into period values ('2015-12-02', '2999-11-12');
@@ -35,13 +40,18 @@ insert into lives values ('2015-12-02', '2999-11-12', 2, 2222);
 insert into lives values ('2015-12-03', '2999-11-12', 3, 3333);
 insert into lives values ('2015-12-04', '2999-11-12', 4, 3333);
 insert into connects values ('2015-12-01', '2999-11-12', 11, 'Philips', 'pan1');
-insert into connects values ('2015-12-01', '2999-11-12', 12, 'Philips', 'pan1');
-insert into connects values ('2015-12-01', '2999-11-12', 13, 'Philips', 'pan1');
+insert into connects values ('2015-12-01', '2999-11-12', 44, 'Philips', 'pan1');
+insert into connects values ('2015-12-01', '2999-11-12', 33, 'Philips', 'pan1');
 insert into connects values ('2015-12-02', '2999-11-12', 22, 'billabong', 'pan2');
-insert into connects values ('2015-12-03', '2999-11-12', 33, 'Philips', 'pan3');
-insert into connects values ('2015-12-04', '2999-11-12', 44, 'Philips', 'pan4');
+insert into connects values ('2015-12-03', '2999-11-12', 55, 'Philips', 'pan3');
+insert into connects values ('2015-12-04', '2999-11-12', 66, 'Philips', 'pan4');
 insert into wears values ('2015-12-01', '2999-11-12', 1, 'pan1');
 insert into wears values ('2015-12-02', '2999-11-12', 2, 'pan2');
+insert into connects values ('2015-12-02', '2999-11-12', 77, 'Philips', 'pan2');
+insert into connects values ('2015-12-02', '2999-11-12', 88, 'Philips', 'pan2');
+insert into connects values ('2015-12-02', '2999-11-12', 99, 'Philips', 'pan2');
+insert into connects values ('2015-12-02', '2999-11-12', 12, 'Philips', 'pan2');
+insert into connects values ('2015-12-02', '2999-11-12', 13, 'Philips', 'pan2');
 insert into wears values ('2015-12-03', '2999-11-12', 3, 'pan3');
 insert into wears values ('2015-12-04', '2999-11-12', 4, 'pan4');
 
@@ -49,7 +59,7 @@ insert into wears values ('2015-12-04', '2999-11-12', 4, 'pan4');
 
 /* Query b): Que concelho tem o maior numero de dispositivos da marca Philips activos*/
 
-select lives_muni
+select lives_muni, municipality_name
 from municipality, period, connects, lives, wears
 where connects_manuf = 'Philips'
 and connects_end like '%2999%'
