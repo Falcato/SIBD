@@ -60,5 +60,5 @@ and reading_manuf=connects_manuf
 and period_start=wears_start
 and period_end=wears_end
 and date(reading_datetime) between period_start and period_end
-and date(reading_datetime) > DATE_SUB(now(), INTERVAL 6 MONTH)
+and date(reading_datetime) > DATE_SUB(now(), INTERVAL 6 MONTH);
 

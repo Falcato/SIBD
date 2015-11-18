@@ -72,23 +72,9 @@ select municipality_name, count(lives_muni)
 		on lives_muni = municipality_nut4code		
 where connects_manuf = 'Philips'
 and connects_end like '%2999%'
-and wears_end like   '%2999%'
+and wears_end like '%2999%'
 and lives_end like '%2999%'
 group by lives_muni
 order by count(lives_muni) desc
 limit 1;
 
-/*select municipality_name
-from municipality
-where municipality_nut4code =
-(select lives_muni
-from municipality, period, connects, lives, wears
-where connects_manuf = 'Philips'
-and connects_end like '%2999%'
-and wears_end like '%2999%'
-and lives_end like '%2999%'
-and wears_pan = connects_pan
-and wears_patient = lives_patient
-group by lives_muni
-order by count(lives_muni) desc 
-limit 1);*/
