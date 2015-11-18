@@ -47,7 +47,9 @@ for each row
 begin
 
 	if new.connects_start < some (select connects_end from connects
-     where connects_pan = new.connects_pan) then
+	 where connects_pan = new.connects_pan) and new.connects_snum != all (select connects_snum from connects 
+     where new.connects_pan = connects_pan) or new.connects_manuf != all (select connects_manuf from connects 
+     where new.connects_pan = connects_pan) then
 		
 		call pan_already_in_use_4();
 		

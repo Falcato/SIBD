@@ -45,13 +45,13 @@ insert into connects values ('2015-12-01', '2999-11-12', 33, 'Philips', 'pan1');
 insert into connects values ('2015-12-02', '2999-11-12', 22, 'billabong', 'pan2');
 insert into connects values ('2015-12-03', '2999-11-12', 55, 'Philips', 'pan3');
 insert into connects values ('2015-12-04', '2999-11-12', 66, 'Philips', 'pan4');
-insert into wears values ('2015-12-01', '2999-11-12', 1, 'pan1');
-insert into wears values ('2015-12-02', '2999-11-12', 2, 'pan2');
 insert into connects values ('2015-12-02', '2999-11-12', 77, 'Philips', 'pan2');
 insert into connects values ('2015-12-02', '2999-11-12', 88, 'Philips', 'pan2');
 insert into connects values ('2015-12-02', '2999-11-12', 99, 'Philips', 'pan2');
 insert into connects values ('2015-12-02', '2999-11-12', 12, 'Philips', 'pan2');
 insert into connects values ('2015-12-02', '2999-11-12', 13, 'Philips', 'pan2');
+insert into wears values ('2015-12-01', '2999-11-12', 1, 'pan1');
+insert into wears values ('2015-12-02', '2999-11-12', 2, 'pan2');
 insert into wears values ('2015-12-03', '2999-11-12', 3, 'pan3');
 insert into wears values ('2015-12-04', '2999-11-12', 4, 'pan4');
 
@@ -59,11 +59,11 @@ insert into wears values ('2015-12-04', '2999-11-12', 4, 'pan4');
 
 /* Query b): Que concelho tem o maior numero de dispositivos da marca Philips activos*/
 
-select lives_muni, municipality_name
+select lives_muni
 from municipality, period, connects, lives, wears
 where connects_manuf = 'Philips'
 and connects_end like '%2999%'
-
+and wears_pan = connects_pan
 and wears_patient = lives_patient
 group by lives_muni
 order by count(lives_muni) desc 
