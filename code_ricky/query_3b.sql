@@ -63,7 +63,6 @@ select lives_muni, municipality_name
 from municipality, period, connects, lives, wears
 where connects_manuf = 'Philips'
 and connects_end like '%2999%'
-
 and wears_patient = lives_patient
 group by lives_muni
 order by count(lives_muni) desc 
