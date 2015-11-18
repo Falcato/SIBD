@@ -29,6 +29,7 @@ insert into period values ('2015-11-02', '2999-11-12');
 insert into period values ('2015-11-01', '2999-11-12');
 insert into period values ('2015-11-03', '2999-11-12');
 insert into period values ('2015-11-04', '2999-11-12');
+insert into period values ('2013-11-03', '2013-11-04');
 insert into municipality values (1111, 'Palmela');
 insert into municipality values (2222, 'Almada');
 insert into municipality values (3333, 'Lisboa');
@@ -44,13 +45,20 @@ insert into connects values ('2015-11-03', '2999-11-12', 33, 'Quick Silver', 'pa
 insert into connects values ('2015-11-04', '2999-11-12', 44, 'Philips', 'pan4');
 insert into wears values ('2015-11-01', '2999-11-12', 1, 'pan1');
 insert into wears values ('2015-11-02', '2999-11-12', 2, 'pan2');
-insert into wears values ('2015-11-03', '2999-11-12', 3, 'pan3');
+insert into wears values ('2013-11-03', '2013-11-04', 3, 'pan3');
 insert into wears values ('2015-11-04', '2999-11-12', 4, 'pan4');
 
 /* Query c): Que fabricantes tiveram dispositivos, balanças, utilizados no ultimo ano?*/
 
-select distinct device_manufacturer
-from device, wears
-where description = 'scale'
-and date(wears_end) > DATE_SUB(now(), INTERVAL 12 MONTH);
+select distinct device_manufacturer /* DIstinct porque para uma marca existem aparelhos diferentes com wears_end dates diferentes no ultimo ano */
+from device
+	join connects
+	join pan
+		on pan_domain = connects_pan
+	join wears
+		on wears_pan = pan_domain
+where description like '%scale%'
+and connects_manuf = device_manufacturer
+and connects_snum = device_serialnum
+and wears_end > DATE_SUB(CURDATE(), INTERVAL 12 MONTH);
 
