@@ -5,6 +5,7 @@ for each row
 begin
 
 	if new.wears_pan in (select wears_pan from wears where new.wears_pan = wears_pan)
+	 and new.wears_end < new.wears_start
 	 and new.wears_start < some (select wears_end from wears
 	 where new.wears_pan = wears_pan) then
 		
@@ -19,6 +20,8 @@ for each row
 begin
 
 	if new.wears_start < some (select wears_end from wears
+	 where wears_pan = new.wears_pan) and new.wears_end < some (select wears_start from wears
+	 where wears_pan = new.wears_pan) and new.wears_end < some (select wears_start from wears
 	 where wears_pan = new.wears_pan) and new.wears_patient != all (select wears_patient from wears 
      where new.wears_pan = wears_pan) then
 		
@@ -33,6 +36,7 @@ for each row
 begin
 
 	if new.connects_pan in (select connects_pan from connects where new.connects_pan = connects_pan)
+	 and new.connects_end < new.connects_start
 	 and new.connects_start < some (select connects_end from connects
 	 where new.connects_pan = connects_pan) then
 		
@@ -47,6 +51,7 @@ for each row
 begin
 
 	if new.connects_start < some (select connects_end from connects
+	 where connects_pan = new.connects_pan) and new.connects_end < some (select connects_start from connects
 	 where connects_pan = new.connects_pan) and new.connects_snum != all (select connects_snum from connects 
      where new.connects_pan = connects_pan) or new.connects_manuf != all (select connects_manuf from connects 
      where new.connects_pan = connects_pan) then
