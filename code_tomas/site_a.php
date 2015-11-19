@@ -1,6 +1,6 @@
 <html>
 	<body>
-		<form action="insert.php" method="post">
+		<form action="lab_adapt.php" method="post">
 			<fieldset>
 				<legend>Insert a patient's name</legend>
 				<table>
