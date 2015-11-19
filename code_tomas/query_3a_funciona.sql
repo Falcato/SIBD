@@ -1,4 +1,4 @@
-insert into patient values (1, 'ricky', 'rua das vacas');
+/*insert into patient values (1, 'ricky', 'rua das vacas');
 insert into patient values (2, 'ze', 'rua do barnabe');
 insert into patient values (3, 'tomas', 'rua da alameda');
 insert into patient values (4, 'nabais', 'rua de telheiras');
@@ -11,13 +11,13 @@ insert into period values ('2010-01-01', '2010-12-31');
 insert into period values ('2011-01-01', '2011-12-31');
 insert into period values ('2012-01-01', '2999-12-31');
 insert into lives values ('2010-01-01', '2010-12-31',1,11111); /*ricky viveu em lx nesse tempo */
-insert into lives values ('2011-01-01', '2011-12-31',1,33333); /*ricky viveu em peniche nesse tempo */
-insert into lives values ('2012-01-01', '2999-12-31',1,55555); /*ricky vive agora no meio das vacas */
-insert into lives values ('2012-01-01', '2999-12-31',2,22222); /*ze vive agora no guetto */
-insert into lives values ('2012-01-01', '2999-12-31',3,11111);	/*tomas vive agora no meio das  */
-insert into lives values ('2012-01-01', '2999-12-31',4,11111);	/*nabais vive agora no meio das telhas */
+/*insert into lives values ('2011-01-01', '2011-12-31',1,33333); /*ricky viveu em peniche nesse tempo */
+/*insert into lives values ('2012-01-01', '2999-12-31',1,55555); /*ricky vive agora no meio das vacas */
+/*insert into lives values ('2012-01-01', '2999-12-31',2,22222); /*ze vive agora no guetto */
+/*insert into lives values ('2012-01-01', '2999-12-31',3,11111);	/*tomas vive agora no meio das  */
+/*insert into lives values ('2012-01-01', '2999-12-31',4,11111);	/*nabais vive agora no meio das telhas */
 
-insert into period values ('2014-11-21', '2014-11-25');		 
+/*insert into period values ('2014-11-21', '2014-11-25');		 
 insert into period values ('2015-11-10', '2015-11-12');
 insert into device values (11,'rip curl', 'blood pressure');
 insert into device values (77,'philips', 'blood pressure');
@@ -32,7 +32,7 @@ insert into sensor values (55,'nokia', 'anos-luz');
 
 /* Criei o ze ligado ao pan1, pan1 ligado ao blood_pressure.*/
 /*insert into period values ('2015-11-17', '2015-11-20');*/
-insert into pan values ('pan1', 999);
+/*insert into pan values ('pan1', 999);
 insert into pan values ('pan2', 999);
 insert into pan values ('pan3', 999);
 insert into pan values ('pan4', 999);
@@ -72,7 +72,7 @@ select * from connects;
 select * from reading;
 select * from sensor;
 
-select patient_number, patient_name, reading_value, sensor_units, reading_datetime
+select distinct patient_number, patient_name, reading_value, sensor_units, reading_datetime
 from reading
 	join sensor
 	join device
@@ -84,8 +84,9 @@ from reading
 	join patient
 		on wears_patient = patient_number
 
-where description like 'blood pressure'
+where description like '%blood pressure%'
 and date(reading_datetime) > DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+and date(reading_datetime) between wears_start and wears_end  /*VERIFICAR QUE EXISTE ALGUEM A USAR A PAN NO MOMENTO DA LEITURA*/
 and reading_snum = device_serialnum
 and reading_manuf = device_manufacturer	
 and connects_manuf = device_manufacturer
