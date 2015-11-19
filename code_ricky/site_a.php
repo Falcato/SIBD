@@ -1,6 +1,6 @@
 <html>
 	<body>
-		<form action="insert.php" method="post">
+		<form action="4a.php" method="post">
 			<fieldset>
 				<legend>Insert a patient's name</legend>
 				<table>

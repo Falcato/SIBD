@@ -38,8 +38,6 @@
 				echo("</td></tr>");
 		}
 		echo("</table>");
-		/*tabela XXX*/
-		
 	$connection = null;
 ?>
 	</body>
