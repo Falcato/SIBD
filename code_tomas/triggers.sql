@@ -20,7 +20,8 @@ begin
 
 	if (new.wears_start < some (select wears_end from wears where wears_pan = new.wears_pan) /*PERGUNTAR AO PROF SE TEMOS DE NOS PREOCUPAR COM A DATA DE INICIO*/
 	 or new.wears_end < some (select wears_start from wears where wears_pan = new.wears_pan))
-	 and new.wears_patient != all (select wears_patient from wears where new.wears_pan = wears_pan) then
+	 and new.wears_patient != all (select wears_patient from wears where new.wears_pan = wears_pan)
+	 /*or new.wears_end < new.wears_start*/ then
 		
 		call pan_already_in_use_2();
 		
