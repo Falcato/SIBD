@@ -32,7 +32,8 @@
 					join patient
 						on wears_patient = patient_number
 
-				where patient_name = '$patient_request'
+				where patient_name like '%$patient_request%'
+				and date(reading_datetime) between wears_start and wears_end
 				and reading_snum = device_serialnum
 				and reading_manuf = device_manufacturer	
 				and connects_manuf = device_manufacturer
@@ -87,7 +88,8 @@
 					join patient
 						on wears_patient = patient_number
 
-				where patient_name = '$patient_request'
+				where patient_name like '%$patient_request%'
+				and date(setting_datetime) between wears_start and wears_end
 				and setting_snum = device_serialnum
 				and setting_manuf = device_manufacturer	
 				and connects_manuf = device_manufacturer
