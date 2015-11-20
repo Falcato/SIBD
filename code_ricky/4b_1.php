@@ -40,6 +40,8 @@
 					echo("</td></tr>");
 			}
 			echo("</table>");
+		}else{
+			echo("<p>There is no patient with that name</p>");
 		}
 		echo("<br />");
 		echo("<br />");
