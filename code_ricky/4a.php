@@ -27,8 +27,7 @@
 					on pan_domain = wears_pan
 				join patient
 					on wears_patient = patient_number
-
-			where patient_name = '$patient_request'
+			where patient_name like '%$patient_request%'
 			and date(reading_datetime) between wears_start and wears_end
 			and reading_snum = device_serialnum
 			and reading_manuf = device_manufacturer	
@@ -37,34 +36,38 @@
 			and sensor_manuf = device_manufacturer
 			and sensor_snum = device_serialnum";
 		$result = $connection->query($sql_reading);
+
 		if ($result == FALSE){
 			$info = $connection->errorInfo();
 			echo("<p>Error: {$info[2]}</p>");
 			exit();
 		}
-		echo("<table border=\"1\">");
-		echo("<tr><td>SIDN</td><td>Patient's Name</td>
-			<td>Device Serial Number</td><td>Device Manufacturer</td>
-			<td>Reading Value</td><td>Sensor's Units</td><td>Reading Time</td></tr>");
-		foreach($result as $row){
-				echo("<tr><td>");
-				echo($row['patient_number']);
-				echo("</td><td>");
-				echo($row['patient_name']);
-				echo("</td><td>");
-				echo($row['device_serialnum']);
-				echo("</td><td>");
-				echo($row['device_manufacturer']);
-				echo("</td><td>");
-				echo($row['reading_value']);
-				echo("</td><td>");
-				echo($row['sensor_units']);
-				echo("</td><td>");				
-				echo($row['reading_datetime']);
-				echo("</td></tr>");
+		$result = $connection->query($sql_reading);
+		$nrows = $result->rowCount();
+		if ($nrows >0){
+			echo("<table border=\"1\">");
+			echo("<tr><td>SIDN</td><td>Patient's Name</td>
+				<td>Device Serial Number</td><td>Device Manufacturer</td>
+				<td>Reading Value</td><td>Sensor's Units</td><td>Reading Time</td></tr>");
+			foreach($result as $row){
+					echo("<tr><td>");
+					echo($row['patient_number']);
+					echo("</td><td>");
+					echo($row['patient_name']);
+					echo("</td><td>");
+					echo($row['device_serialnum']);
+					echo("</td><td>");
+					echo($row['device_manufacturer']);
+					echo("</td><td>");
+					echo($row['reading_value']);
+					echo("</td><td>");
+					echo($row['sensor_units']);
+					echo("</td><td>");				
+					echo($row['reading_datetime']);
+					echo("</td></tr>");
+			}
+			echo("</table>");
 		}
-		echo("</table>");
-		
 		
 		echo("<br />");
 		echo("<br />");
@@ -81,8 +84,7 @@
 					on pan_domain = wears_pan
 				join patient
 					on wears_patient = patient_number
-
-			where patient_name = '$patient_request'
+			where patient_name like '%$patient_request%'
 			and date(setting_datetime) between wears_start and wears_end
 			and setting_snum = device_serialnum
 			and setting_manuf = device_manufacturer	
@@ -96,28 +98,32 @@
 			echo("<p>Error: {$info[2]}</p>");
 			exit();
 		}
-		echo("<table border=\"1\">");
-		echo("<tr><td>SIDN</td><td>Patient's Name</td>
-			<td>Device Serial Number</td><td>Device Manufacturer</td>
-			<td>Setting Value</td><td>Actuator's Units</td><td>Setting Time</td></tr>");
-		foreach($result as $row){
-				echo("<tr><td>");
-				echo($row['patient_number']);
-				echo("</td><td>");
-				echo($row['patient_name']);
-				echo("</td><td>");
-				echo($row['device_serialnum']);
-				echo("</td><td>");
-				echo($row['device_manufacturer']);
-				echo("</td><td>");
-				echo($row['setting_value']);
-				echo("</td><td>");
-				echo($row['actuator_units']);
-				echo("</td><td>");				
-				echo($row['setting_datetime']);
-				echo("</td></tr>");
+		$result = $connection->query($sql_setting);
+		$nrows = $result->rowCount();
+		if ($nrows >0){
+			echo("<table border=\"1\">");
+			echo("<tr><td>SIDN</td><td>Patient's Name</td>
+				<td>Device Serial Number</td><td>Device Manufacturer</td>
+				<td>Setting Value</td><td>Actuator's Units</td><td>Setting Time</td></tr>");
+			foreach($result as $row){
+					echo("<tr><td>");
+					echo($row['patient_number']);
+					echo("</td><td>");
+					echo($row['patient_name']);
+					echo("</td><td>");
+					echo($row['device_serialnum']);
+					echo("</td><td>");
+					echo($row['device_manufacturer']);
+					echo("</td><td>");
+					echo($row['setting_value']);
+					echo("</td><td>");
+					echo($row['actuator_units']);
+					echo("</td><td>");				
+					echo($row['setting_datetime']);
+					echo("</td></tr>");
+			}
+			echo("</table>");
 		}
-		echo("</table>");
 	$connection = null;
 ?>
 	</body>
