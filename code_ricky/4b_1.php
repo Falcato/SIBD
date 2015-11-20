@@ -1,5 +1,9 @@
 <html>
 	<body>
+		<form action="4b_2.php" method="post">
+			<fieldset>
+				<legend>Patient(s)</legend>
+				<table>
 <?php
 		$host = "db.ist.utl.pt";
 		$user = "ist175757";
@@ -32,7 +36,7 @@
 		if ($nrows >0){
 			echo("<table border=\"1\">");
 			echo("<tr><td>SIDN</td><td>Patient's Name</td></tr>");
-			foreach($result as $row){
+			foreach($result1 as $row){
 					echo("<tr><td>");
 					echo($row['patient_number']);
 					echo("</td><td>");
@@ -40,21 +44,17 @@
 					echo("</td></tr>");
 			}
 			echo("</table>");
+			echo("Choose one patient:");
+			echo("<br />");
+			foreach($result as $row){
+				$patient_number = $row['patient_number'];
+				echo("<input type=\"radio\" name = \"patient_number\" value=\"$patient_number\" checked=\"checked\">	$patient_number <br/>");
+			}
 		}else{
 			echo("<p>There is no patient with that name</p>");
 		}
-		echo("<br />");
-		echo("<br />");
 	$connection = null;
 ?>
-		<form action="4b_2.php" method="post">
-			<fieldset>
-				<legend>Insert a patient's SIDN</legend>
-				<table>
-					<tr>
-						<td align="right">Patient SIDN</td>
-						<td><input type="text" name="patient_SIDN"/></td>
-					</tr>
 					<tr>
 						<td></td>
 						<td><input type="submit" value="Submit"/></td>
