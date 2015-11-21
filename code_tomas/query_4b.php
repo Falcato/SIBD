@@ -102,7 +102,7 @@
 						$device_serialnum = $row['device_serialnum'];
 						$device_manufacturer = $row['device_manufacturer'];
 						$description = $row['description'];
-						echo("<input type=\"checkbox\" name = \"device_serialnum\" value=\"$device_serialnum\"> $device_serialnum  $device_manufacturer $description<br/>");
+						echo("<input type=\"checkbox\" name = \"device_serialnum[]\" value=\"$device_serialnum\"> $device_serialnum : $device_manufacturer : $description<br/>");
 					}
 
 						echo("<br/>");
