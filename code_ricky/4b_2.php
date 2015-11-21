@@ -1,7 +1,7 @@
 <html>
 	<body>
-		<form action="4b_1.php" method="post"> 
-		<p>Devices:<br/>
+		<form action="site_b.php" method="post"> 
+		<p>
 
 <?php
 		$host = "db.ist.utl.pt";
@@ -17,8 +17,7 @@
 			echo("</p>");
 			exit();
 		}
-
-		$patient_request = $_REQUEST['patient_SIDN'];
+		$patient_request = $_REQUEST['patient_number'];
 		$sql = "select device_serialnum, device_manufacturer, description
 			from connects 
 				join pan 
@@ -30,6 +29,7 @@
 				join patient
 					on patient_number = wears_patient
 			where patient_number = '$patient_request'
+			and device_manufacturer = connects_manuf
 			and connects_end like '%2999%'
 			and wears_end like '%2999%'";
 
@@ -44,7 +44,8 @@
 		$nrows = $result1->rowCount();
 		
 		if ($nrows >0){
-			/*echo("<table border=\"1\">");
+			echo("<p>Devices from current PAN:</p>");
+			echo("<table border=\"1\">");
 			echo("<tr><td>Serial Number</td><td>Manufacturer</td><td>Description</td></tr>");
 			foreach($result as $row){
 					echo("<tr><td>");
@@ -55,20 +56,55 @@
 					echo($row['description']);
 					echo("</td></tr>");
 			}
-			echo("</table>");*/
-			
-			//while($row = mysql_fetch_array($result)){ 
-				
-			foreach($result as $row){
+			echo("</table>");
+			echo("<br />");
+		}
+		$sql2 = "select device_serialnum, device_manufacturer, description
+			from connects 
+				join pan 
+					on connects_pan = pan_domain
+				join device
+					on device_serialnum = connects_snum
+				join wears 
+					on wears_pan = pan_domain
+				join patient
+					on patient_number = wears_patient
+
+			where patient_number = '$patient_request'
+			and wears_end not like '%2999%' and wears_end >= all 
+			(select wears_end from wears where wears_end not like '%2999%')";
+
+			//and wears_end not like '%2999%'			and device_manufacturer = connects_manuf
+		$result2 = $connection->query($sql2);
+		$nrows2 = $result2->rowCount();
+		$result3 = $connection->query($sql2);
+		if ($nrows2 >0 and $nrows >0){
+			echo("<p>Devices from last PAN:</p>");
+			echo("<table border=\"1\">");
+			echo("<tr><td>Serial Number</td><td>Manufacturer</td><td>Description</td></tr>");
+			foreach($result2 as $row){
+					echo("<tr><td>");
+					echo($row['device_serialnum']);
+					echo("</td><td>");
+					echo($row['device_manufacturer']);
+					echo("</td><td>");
+					echo($row['description']);
+					echo("</td></tr>");
+			}
+			echo("</table>");
+
+			echo("<br />");
+			echo("Choose one or more device(s):");
+			echo("<br />");
+			foreach($result3 as $row){
 				$manufacturer = $row['device_manufacturer'];
 				$device_serialnum = $row['device_serialnum'];
 				$descrip = $row['description'];
-				echo("<input type=\"checkbox\" name=\"Device\" value=\"$device_serialnum\">$descrip <br />");
+				echo("<input type=\"checkbox\" name=\"Device\" value=\"$device_serialnum\">  $device_serialnum - $descrip <br />");
 				}
 		}else{
-			echo("<p>There is no connected device to this patient</p>");
+			echo("<p>There is no connected PAN to this patient</p>");
 		}
-		echo("<br />");
 		$connection = null;
 ?>		
  			</select>
