@@ -100,13 +100,13 @@
 				$device_serialnum = $row['device_serialnum'];
 				$descrip = $row['description'];
 				
-				echo"<input type='hidden' name='$device_serialnum$manufacturer' value='$manufacturer'/>";
+				//echo"<input type='hidden' name='$device_serialnum$manufacturer' value='$manufacturer'/>";
 				echo"<input type='checkbox' name='Device[]' value='$device_serialnum|$manufacturer'>  $device_serialnum - $manufacturer - $descrip <br />";
 				//echo("<input type=\"hidden\" name=\"Manufacturer[]\" value=\"$manufacturer\"/>");
 				//echo("<input type=\"checkbox\" name=\"Device[]\" value=\"$device_serialnum\">  $device_serialnum - $manufacturer - $descrip <br />");
 				}
 		}elseif ($nrows2 == 0 and $nrows > 0){			
-			echo("<p>There was no previous PAN connected to this patient</p>");
+			echo("<p>There  no previous PAN/devices connected to this patient</p>");
 		}elseif ($nrows2 == 0 and $nrows == 0){
 			echo("<p>There is no record of a connection between this patient and one or more PAN(s)</p>");
 		}elseif ($nrows2 > 0 and $nrows == 0) {
@@ -118,32 +118,6 @@
  			</p>
  			<p><input type="submit" value="Submit"/></p>
  			<?php
-					
-					//list($device_serialnum,$device_manufacturer) = explode('|',$_POST['device_specs']);
- 					/*$abc=$_POST['Device'];
- 					echo var_dump($abc)."<br>";
-					$teste = explode('|',$abc);
-					echo var_dump($teste)."<br>";
-						echo "<p>sas = $teste[0]</p>";
-						echo "<p>sas = $teste[1]</p>";
-					$_POST['Device'] = $option;
-					$option = explode ("|",$option);
-					print_r($option);
-					//echo $option[0]; //This would print the material
-					//echo $option[1]; //This would print the price
-
-
-
- 					if( (!empty($_POST['Device']) ){
-						foreach($_POST['Device']) as $option){
-							 $option= explode ("|",$option);
-							print $option[0]; //This would print the material
-							print $option[1]; //This would print the price
-							echo("<br />");
-							//echo ("<p> $option[0] - $option[1] </p>");
-						}
-					}
-*/
 				if( (!empty($_POST['Device']))  ) {
 				    foreach($_POST['Device'] as $check) {
 				    	$teste = explode('|',$check);
