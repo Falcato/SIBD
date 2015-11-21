@@ -30,9 +30,8 @@ create trigger check_overlapping_periods_connects_insert before insert on connec
 for each row
 begin
 
-	if new.connects_start < some (select connects_end from connects where new.connects_pan = connects_pan) 	/*PERGUNTAR AO PROF SE PRECISAMOS DE VER OS TEMPOS*/
-	 and new.connects_pan in (select connects_pan from connects where new.connects_pan = connects_pan) then
-		
+	if new.connects_start < some (select connects_end from connects where new.connects_snum = connects_snum and new.connects_manuf = connects_manuf) then 	/*PERGUNTAR AO PROF SE PRECISAMOS DE VER OS TEMPOS*/
+			
 		call pan_already_in_use_3();
 		
 	end if;
@@ -43,7 +42,7 @@ create trigger check_overlapping_periods_connects_update before update on connec
 for each row
 begin
 
-	if new.connects_end < some (select connects_start from connects where connects_pan = new.connects_pan)
+	if new.connects_end < some (select connects_start from connects where new.connects_snum = connects_snum and new.connects_manuf = connects_manuf)
 	 and (new.connects_snum != all (select connects_snum from connects where new.connects_pan = connects_pan)
 	 or new.connects_manuf != all (select connects_manuf from connects where new.connects_pan = connects_pan)) then
 		

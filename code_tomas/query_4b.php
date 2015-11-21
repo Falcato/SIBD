@@ -1,59 +1,117 @@
 <html>
 	<body>
-<?php
-		$host = "db.ist.utl.pt";
-		$user = "ist175876";
-		$pass = "ffar1598";
-		$dsn = "mysql:host=$host;dbname=$user";
-		try{
-			$connection = new PDO($dsn, $user, $pass);
-		}
-		catch(PDOException $exception){
-			echo("<p>Error: ");
-			echo($exception->getMessage());
-			echo("</p>");
-			exit();
-		}
-		/*tabela dos readings*/
+		<form action="site_final_4b.php" method="post">
+			<fieldset>
+			<?php
+					$host = "db.ist.utl.pt";
+					$user = "ist175876";
+					$pass = "ffar1598";
+					$dsn = "mysql:host=$host;dbname=$user";
+					try{
+						$connection = new PDO($dsn, $user, $pass);
+					}
+					catch(PDOException $exception){
+						echo("<p>Error: ");
+						echo($exception->getMessage());
+						echo("</p>");
+						exit();
+					}
+					/*tabela dos readings*/
 
-		$patient_request = $_REQUEST['patient_name'];
-		$pan_request = $_REQUEST['pan_name'];
+					$patient_request = $_REQUEST['patient_number'];
 
-		$sql_devices = "select device_serialnum, device_manufacturer
-					from setting
-					join actuator
-					join device
-					join connects
-					join pan
-						on pan_domain = connects_pan
-					join wears
-						on pan_domain = wears_pan
-					join patient
-						on wears_patient = patient_number
+					$sql_pan = "select wears_pan from wears
+								where '$patient_request' = wears_patient";
 
-			where patient_number = '$patient_number'";
+					$result_pan = $connection->query($sql_pan);
+					$nrows = $result_pan->ROWCOUNT();
+					if($nrows <= 0){
+						echo("<p>Error: There is no PAN associated with that patient.</p>");
+						exit();
+					}
 
-		$result = $connection->query($sql_devices);
-		if ($result == FALSE){
-			$info = $connection->errorInfo();
-			echo("<p>Error: {$info[2]}</p>");
-			exit();
-		}
+					/*QUERY DEVICES ACTUAL PAN*/
+
+					$sql_devices = "select device_serialnum, device_manufacturer, description
+								from device, wears, connects
+								where wears_patient = '$patient_request'
+								and wears_end > CURDATE()
+								and connects_pan = wears_pan
+								and connects_end > CURDATE()
+								and device_serialnum = connects_snum
+								and device_manufacturer = connects_manuf";
+
+					$result = $connection->query($sql_devices);
+					if ($result == FALSE){
+						$info = $connection->errorInfo();
+						echo("<p>Error: {$info[2]}</p>");
+						exit();
+					}
+
+					$nrows = $result->ROWCOUNT();
+					if($nrows <= 0){
+						echo("<p>Error: There are no medical devices associated with that PAN.</p>");
+						exit();
+					}
 
 
-		echo("<table border=\"1\">");
-		echo("<tr><td>SNum</td><td>Manuf</td>");
-		foreach($result as $row){
-				echo("<tr><td>");
-				echo($row['device_snum']);
-				echo("</td><td>");
-				echo($row['device_manuf']);
-				echo("</td></tr>");
-		}
-		echo("</table>");
+					echo("<table border=\"1\">");
+					echo("Devices on Actual PAN");
+					echo("<tr><td>Serial Number</td><td>Manufacturer</td><td>Description</td>");
+					foreach($result as $row){
+							echo("<tr><td>");
+							echo($row['device_serialnum']);
+							echo("</td><td>");
+							echo($row['device_manufacturer']);
+							echo("</td><td>");
+							echo($row['description']);
+							echo("</td></tr>");
+					}
+					echo("</table>");
 
+					echo("<br/>");
 
-			$connection = null;
-?>
+					/*QUERY DEVICES LAST PAN*/
+
+					$sql_devices_last = "select device_serialnum, device_manufacturer, description
+						from connects, device, wears			
+						where wears_patient = '$patient_request'
+						and wears_end < CURDATE() and wears_end >= all 
+						(select wears_end from wears where wears_end < CURDATE())
+						and connects_pan = wears_pan
+						and device_serialnum = connects_snum
+						and device_manufacturer = connects_manuf";
+
+					$result = $connection->query($sql_devices_last);
+					if ($result == FALSE){
+						$info = $connection->errorInfo();
+						echo("<p>Error: {$info[2]}</p>");
+						exit();
+					}
+
+					$nrows = $result->ROWCOUNT();
+					if($nrows <= 0){
+						echo("<p>Error: There are no medical devices currently associated with the last PAN of this patient.</p>
+							<p>Or the PAN is already in use by another patient.</p>");
+						exit();
+					}
+
+					echo("<p>Devices on Last used PAN</p>");
+					echo("<p>Choose the ones you want to move to your actual PAN:</p>");
+					foreach($result as $row){
+						$device_serialnum = $row['device_serialnum'];
+						$device_manufacturer = $row['device_manufacturer'];
+						$description = $row['description'];
+						echo("<input type=\"checkbox\" name = \"device_serialnum[]\" value=\"$device_serialnum\"> $device_serialnum : $device_manufacturer : $description<br/>");
+					}
+
+						echo("<br/>");
+						
+						$connection = null;
+		?>
+
+				<input type="submit" value="Submit"/>
+			</fieldset>
+		</form>
 	</body>
 </html>
