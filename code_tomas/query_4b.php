@@ -16,22 +16,28 @@
 		}
 		/*tabela dos readings*/
 
-		$patient_request = $_REQUEST['patient_name'];
-		$pan_request = $_REQUEST['pan_name'];
+		$patient_request = $_REQUEST['patient_number'];
+
+		$sql_pan = "select wears_pan from wears
+					where '$patient_request' = wears_patient";
+
+		$result_pan = $connection->query($sql_pan);
+		$nrows = $result_pan->ROWCOUNT();
+		if($nrows <= 0){
+			echo("<p>Error: There is no PAN associated with that patient.</p>");
+			exit();
+		}
+
+		/*QUERY DEVICES ACTUAL PAN*/
 
 		$sql_devices = "select device_serialnum, device_manufacturer
-					from setting
-					join actuator
-					join device
-					join connects
-					join pan
-						on pan_domain = connects_pan
-					join wears
-						on pan_domain = wears_pan
-					join patient
-						on wears_patient = patient_number
-
-			where patient_number = '$patient_number'";
+					from device, wears, connects
+					where wears_patient = '$patient_request'
+					and wears_end > CURDATE()
+					and connects_pan = wears_pan
+					and connects_end > CURDATE()
+					and device_serialnum = connects_snum
+					and device_manufacturer = connects_manuf";
 
 		$result = $connection->query($sql_devices);
 		if ($result == FALSE){
@@ -40,14 +46,57 @@
 			exit();
 		}
 
+		$nrows = $result->ROWCOUNT();
+		if($nrows <= 0){
+			echo("<p>Error: There are no medical devices associated with that PAN.</p>");
+			exit();
+		}
+
 
 		echo("<table border=\"1\">");
-		echo("<tr><td>SNum</td><td>Manuf</td>");
+		echo("Devices on Actual PAN");
+		echo("<tr><td>Serial Number</td><td>Manufacturer</td>");
 		foreach($result as $row){
 				echo("<tr><td>");
-				echo($row['device_snum']);
+				echo($row['device_serialnum']);
 				echo("</td><td>");
-				echo($row['device_manuf']);
+				echo($row['device_manufacturer']);
+				echo("</td></tr>");
+		}
+		echo("</table>");
+
+
+		/*QUERY DEVICES LAST PAN*/
+
+		$sql_devices_last = "select connects_snum, connects_manuf
+					from wears, connects
+					where wears_patient = '$patient_request'
+					and wears_end < CURDATE()
+					and connects_pan = wears_pan
+					and connects_end > CURDATE()";
+
+		$result = $connection->query($sql_devices_last);
+		if ($result == FALSE){
+			$info = $connection->errorInfo();
+			echo("<p>Error: {$info[2]}</p>");
+			exit();
+		}
+
+		$nrows = $result->ROWCOUNT();
+		if($nrows <= 0){
+			echo("<p>Error: There are no medical devices currently associated with the last PAN of this patient.</p>");
+			exit();
+		}
+
+
+		echo("<table border=\"1\">");
+		echo("Devices on Last PAN");
+		echo("<tr><td>Serial Number</td><td>Manufacturer</td>");
+		foreach($result as $row){
+				echo("<tr><td>");
+				echo($row['device_serialnum']);
+				echo("</td><td>");
+				echo($row['device_manufacturer']);
 				echo("</td></tr>");
 		}
 		echo("</table>");
