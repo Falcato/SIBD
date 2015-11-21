@@ -69,7 +69,7 @@ insert into connects values ('2012-01-01', '2999-12-31', 44, 'philips', 'pan3');
 insert into connects values ('2012-01-01', '2999-12-31', 33, 'philips', 'pan3');
 insert into connects values ('2012-01-01', '2999-12-31', 11, 'rip curl', 'pan5');
 update connects set connects_end = '2015-11-17' where connects_snum = 55 and connects_manuf = 'nokia'; 
-insert into connects values ('2015-11-17', '2999-12-31', 55, 'nokia', 'pan1');
+insert into connects values ('2015-11-17', '2999-12-31', 55, 'nokia', 'pan2');
 
 insert into reading values (11, 'rip curl','2014-11-23 15:00:00' , '100');
 insert into reading values (11, 'rip curl','2015-11-11 00:00:01' , '10');
