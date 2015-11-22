@@ -1,6 +1,6 @@
 <html>
 	<body>
-		<form action="4b_2.php" method="post"> 
+		<form action="4b_3.php" method="post"> 
 		<p>
 <?php
 		$host = "db.ist.utl.pt";
@@ -17,6 +17,8 @@
 			exit();
 		}
 		$patient_request = $_REQUEST['patient_number'];
+		$patient_request2 = $_REQUEST['patient_number'];
+ 		echo"<input type='hidden' name='number' value='$patient_request2'/>";
 		$sql = "select device_serialnum, device_manufacturer, description
 			from connects 
 				join pan 
@@ -118,6 +120,7 @@
  			</p>
  			<p><input type="submit" value="Submit"/></p>
  			<?php
+ 			/*
 				if( (!empty($_POST['Device']))  ) {
 				    foreach($_POST['Device'] as $check) {
 				    	$teste = explode('|',$check);
@@ -126,7 +129,7 @@
 				            echo ("<p>$teste[0]......$teste[1] </p>"); 
 				            //caguem no nome das variaveis. isto é a versao em que isto resultou, vou fazer os proximos passos
 				    }
-				}
+				}*/
 ?>
 		</form>
 	</body>
