@@ -1,5 +1,7 @@
 <html>
 	<body>
+		<form action="site_final_4b.php" method="post">
+			<fieldset>
 
 				<?php
 
@@ -17,19 +19,43 @@
 						exit();
 					}
 
-					$patient_request = $_REQUEST['patient_request'];
+					$patient_request = $_POST['patient_number_hidden'];
+					$pan_request = $_POST['last_pan_hidden'];
+
+					echo("<p>$patient_request</p>");
+					echo("<p>$pan_request</p>");
 					
 
 					if( (!empty($_POST['device']))  ) {
 					    foreach($_POST['device'] as $check) {
-					    	$teste = explode('|',$check);
-					            echo ("<p>$teste[0] : $teste[1] </p>"); 
-					            //caguem no nome das variaveis. isto é a versao em que isto resultou, vou fazer os proximos passos
-					    }
+					    	$device = explode('|',$check);
+					            echo ("<p>$device[0] : $device[1] </p>"); 
+								
+							/*RETIRAR TEMPOS DE INCIO E FIM DE UM CERTO DISPOSITIVO QUE VAI SER TROCADO*/
+							$sql_times = "select connects_start, connects_end
+									from wears, connects
+									where wears_patient = '$patient_request'
+									and wears_pan = '$pan_request'
+									and connects_pan = wears_pan
+									and connects_snum = '$device[0]'
+									and connects_manuf = '$device[1]'";
+
+							$result_times = $connection->query($sql_times);
+							
+							if ($result_times == FALSE){
+								$info = $connection->errorInfo();
+								echo("<p>Error: {$info[2]}</p>");
+								exit();
+							}
+							foreach($result_times as $row){
+								$start = $row['connects_start'];
+								$end = $row['connects_end'];
+								echo("<p>START : $start -> END : $end</p>");
+					
+							}
+
+						}
 					}
-
-
-
 
 
 					/*DEVICES NA PAN ACTUAL ACTUALIZADA*/
@@ -72,5 +98,9 @@
 
 					$connection = null;
 				?>
+		
+
+			</fieldset>
+		</form>
 	</body>
 </html>

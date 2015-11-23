@@ -27,7 +27,7 @@
 
 
 					//ENVIO DO PATIENT NUMBER PARA A PROXIMA PAGINA
-					echo"<input type='hidden' name='patient_number' value='$patient_request_hidden'/>";
+					echo("<input type='hidden' name='patient_number_hidden' value='$patient_request_hidden'/>");
 				
 					$sql_pan = "select wears_pan from wears
 								where '$patient_request' = wears_patient";
@@ -128,7 +128,7 @@
 						echo("<br/>");
 
 						//ENVIO DA ULTIMA PAN USADA PARA A PROXIMA PAGINA
-						echo"<input type='hidden' name='last_pan' value='$wears_pan'/>";
+						echo("<input type='hidden' name='last_pan_hidden' value='$last_pan'/>");
 
 						$connection = null;
 		?>
