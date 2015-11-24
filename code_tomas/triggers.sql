@@ -17,8 +17,10 @@ create trigger check_overlapping_periods_wears_update before update on wears
 for each row
 begin
 
-	if new.wears_end < some (select wears_start from wears where wears_pan = new.wears_pan)
-	 and new.wears_patient != all (select wears_patient from wears where new.wears_pan = wears_pan) then
+	if (new.wears_start < some (select wears_end from wears where wears_patient != new.wears_patient and  wears_pan = new.wears_pan) 
+		and new.wears_end > some (select wears_start from wears where wears_patient != new.wears_patient and wears_pan = new.wears_pan))
+	or (new.wears_end > some (select wears_start from wears where wears_patient != new.wears_patient and  wears_pan = new.wears_pan) 
+		and new.wears_start < some (select wears_end from wears where wears_patient != new.wears_patient and wears_pan = new.wears_pan)) then
 		
 		call pan_already_in_use_2();
 		

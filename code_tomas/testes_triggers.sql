@@ -37,13 +37,13 @@ insert into wears values ('2015-11-18', '2999-11-18', 1, 'pan2');*/
 
 insert into period values ('2015-11-11', '2016-11-11');
 insert into period values ('2013-11-11', '2014-11-11');
-insert into period values ('2013-11-11', '2013-12-31');
+insert into period values ('2013-11-11', '2017-12-31');
 
 insert into connects values ('2013-11-11', '2014-11-11', 11, 'nokia', 'pan1');
 insert into connects values ('2015-11-11', '2016-11-11', 11, 'nokia', 'pan2');
 insert into connects values ('2015-11-11', '2016-11-11', 11, 'philips', 'pan1');	
 
-update connects set connects_end = '2013-12-31' where connects_snum = 11 and connects_manuf = 'nokia' and connects_pan = 'pan1';
+update connects set connects_end = '2017-12-31' where connects_snum = 11 and connects_manuf = 'nokia' and connects_pan = 'pan1';
 
 /*update connects set connects_end = '2015-11-17' where connects_snum = 11 and connects_manuf = 'nokia' and connects_pan = 'pan2' and connects_start = '2015-11-12';
 insert into connects values ('2015-11-18', '2999-11-18', 11, 'philips', 'pan2');

@@ -50,7 +50,6 @@
 					echo("<input type='hidden' name='current_pan_hidden' value='$current_pan'/>");
 
 					/*QUERY DEVICES ACTUAL PAN*/
-					
 
 					$sql_devices = "select device_serialnum, device_manufacturer, description
 								from device, wears, connects
@@ -103,7 +102,6 @@
 						and connects_pan = wears_pan
 						and device_serialnum = connects_snum
 						and device_manufacturer = connects_manuf
-						and 
 						and ((connects_start >= wears_start and connects_end <= wears_end)
 							or (connects_start <= wears_start and connects_end >= wears_start)
 							or (connects_start <= wears_end and connects_end >= wears_end))";
@@ -149,7 +147,23 @@
 							$current_pan_device = $row_pan_device['connects_pan'];
 						}
 
-						if($current_pan != $current_pan_device){
+						$sql_user_device = "select wears_end
+										from wears
+										where wears_end >= all
+						 				(select wears_end from wears
+						 					where wears_pan = '$current_pan_device')
+										and wears_pan = '$current_pan_device'";
+
+						$result_user_device = $connection->query($sql_user_device);
+						foreach($result_user_device as $row_user_device){
+							$current_user_device = $row_user_device['wears_end'];
+						}
+
+					    $time_of_device = strtotime($current_user_device);
+					    $todays_date = date("Y-m-d");
+					    $today = strtotime($todays_date);
+
+						if($current_pan != $current_pan_device and $time_of_device < $today){
 							echo("<input type=\"checkbox\" name = \"device[]\" value=\"$device_serialnum|$device_manufacturer\"> $device_serialnum : $device_manufacturer : $description<br/>");
 						}
 
