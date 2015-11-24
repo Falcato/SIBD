@@ -28,7 +28,9 @@
 
 					//ENVIO DO PATIENT NUMBER PARA A PROXIMA PAGINA
 					echo("<input type='hidden' name='patient_number_hidden' value='$patient_request_hidden'/>");
-				
+					
+
+					//QUERY DA PAN ACTUAL
 					$sql_pan = "select wears_pan from wears
 								where '$patient_request' = wears_patient";
 				
@@ -40,7 +42,12 @@
 						echo("<p>Error: There is no PAN associated with that patient.</p>");
 						exit();
 					}
+
+					foreach($result_pan as $row){
+						$current_pan = $row['wears_pan'];
+					}
 					
+					echo("<input type='hidden' name='current_pan_hidden' value='$current_pan'/>");
 
 					/*QUERY DEVICES ACTUAL PAN*/
 					
@@ -85,18 +92,17 @@
 					echo("</table>");
 					echo("<br/>");
 
-
-					/*QUERY DEVICES LAST PAN*/
-					
+					/*QUERY DEVICES LAST PAN*/					
 
 					$sql_devices_last = "select device_serialnum, device_manufacturer, description, wears_pan
 						from connects, device, wears			
 						where wears_patient = '$patient_request'
-						and wears_end < CURDATE() and wears_end >= all 
+						and wears_end < CURDATE() and wears_end >= all
 						(select wears_end from wears where wears_end < CURDATE())
 						and connects_pan = wears_pan
 						and device_serialnum = connects_snum
-						and device_manufacturer = connects_manuf";
+						and device_manufacturer = connects_manuf
+						and connects_pan != '$current_pan'";
 
 					$result = $connection->query($sql_devices_last);
 				
@@ -123,7 +129,24 @@
 						$description = $row['description'];
 						$last_pan = $row['wears_pan'];
 
-						echo("<input type=\"checkbox\" name = \"device[]\" value=\"$device_serialnum|$device_manufacturer\"> $device_serialnum : $device_manufacturer : $description<br/>");
+
+						//QUERY PARA A PAN ACTUAL DO DEVICE
+						$sql_pan_device = "select connects_pan
+						 				from connects
+						 				where connects_end >= all
+						 				(select connects_end from connects)
+						 				and connects_snum = '$device_serialnum'
+						 				and connects_manuf = '$device_manufacturer'";
+
+						$result_pan_device = $connection->query($sql_pan_device);
+						foreach($result_pan_device as $row_pan_device){
+							$current_pan_device = $row_pan_device['connects_pan'];
+						}
+
+						if($current_pan != $current_pan_device){
+							echo("<input type=\"checkbox\" name = \"device[]\" value=\"$device_serialnum|$device_manufacturer\"> $device_serialnum : $device_manufacturer : $description<br/>");
+						}
+
 					}
 						echo("<br/>");
 
