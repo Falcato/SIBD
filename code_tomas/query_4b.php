@@ -98,10 +98,15 @@
 						from connects, device, wears			
 						where wears_patient = '$patient_request'
 						and wears_end < CURDATE() and wears_end >= all
-						(select wears_end from wears where wears_end < CURDATE())
+						(select wears_end from wears where wears_end < CURDATE()
+							and wears_patient = '$patient_request')
 						and connects_pan = wears_pan
 						and device_serialnum = connects_snum
-						and device_manufacturer = connects_manuf";
+						and device_manufacturer = connects_manuf
+						and 
+						and ((connects_start >= wears_start and connects_end <= wears_end)
+							or (connects_start <= wears_start and connects_end >= wears_start)
+							or (connects_start <= wears_end and connects_end >= wears_end))";
 
 					$result = $connection->query($sql_devices_last);
 				
@@ -115,7 +120,8 @@
 				
 					if($nrows <= 0){
 						echo("<p>Error: There are no medical devices currently associated with the last PAN of this patient.</p>
-							<p>Or the PAN is already in use by another patient.</p>");
+							<p>Or the PAN is already in use by another patient.</p>
+							<p>Or the patient doesn't have a last PAN.</p>");
 						exit();
 					}
 				
