@@ -42,9 +42,14 @@ create trigger check_overlapping_periods_connects_update before update on connec
 for each row
 begin
 
-	if new.connects_end < some (select connects_start from connects where new.connects_snum = connects_snum and new.connects_manuf = connects_manuf)
-	 and (new.connects_snum != all (select connects_snum from connects where new.connects_pan = connects_pan)
-	 or new.connects_manuf != all (select connects_manuf from connects where new.connects_pan = connects_pan)) then
+	if (new.connects_start < some (select connects_end from connects 
+			where connects_snum = new.connects_snum and new.connects_manuf = connects_manuf and new.connects_pan != connects_pan)
+		and new.connects_end > some (select connects_start from connects 
+			where connects_snum = new.connects_snum and new.connects_manuf = connects_manuf and new.connects_pan != connects_pan))
+	or (new.connects_end > some (select connects_start from connects 
+			where connects_snum = new.connects_snum and new.connects_manuf = connects_manuf and new.connects_pan != connects_pan)
+		and new.connects_start < some (select connects_end from connects 
+			where connects_snum = new.connects_snum and new.connects_manuf = connects_manuf and new.connects_pan != connects_pan)) then
 		
 		call pan_already_in_use_4();
 		
