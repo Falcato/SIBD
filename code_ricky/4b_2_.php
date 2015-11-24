@@ -3,6 +3,7 @@
 		<form action="4b_3.php" method="post"> 
 		<p>
 <?php
+
 		$host = "db.ist.utl.pt";
 		$user = "ist175757";
 		$pass = "jcfs1855";
@@ -16,17 +17,16 @@
 			echo("</p>");
 			exit();
 		}
-		$patient_request = $_REQUEST['patient_number'];
+		$patient_ = $_REQUEST['patient_number'];
 		$patient_request2 = $_REQUEST['patient_number'];
 		$sql_0 = "select wears_pan from wears where wears_patient = '$patient_request2' and wears_end like '%2999%'";
 			$sql_pan = $connection->query($sql_0);
 			foreach ($sql_pan as $row){
 				$pan_actual = $row['wears_pan'];
 			}
- 		// SENDING HIDDEN VALUES TO THE NEXT PHP WEBPAGE
+ 		
  		echo"<input type='hidden' name='pan_actual_hidden' value='$pan_actual'/>";
  		echo"<input type='hidden' name='number' value='$patient_request2'/>";
-		
 		//DEVICES THAT BELONG TO THE CURRENT PAN
 		$sql = "select device_serialnum, device_manufacturer, description
 			from connects 
@@ -38,7 +38,7 @@
 					on wears_pan = pan_domain
 				join patient
 					on patient_number = wears_patient
-			where patient_number = '$patient_request'
+			where patient_number = '$patient_'
 			and connects_end like '%2999%'
 			and wears_end like '%2999%'";
 
@@ -50,14 +50,8 @@
 		}
 		
 		$result1 = $connection->query($sql);
-		if ($result1 == FALSE){
-			$info = $connection->errorInfo();
-			echo("<p>Error: {$info[2]}</p>");
-			exit();
-		}
 		$nrows = $result1->rowCount();
-
-		//PRINTING TABLE WITH DEVICES FROM CURRENT PAN
+		
 		if ($nrows > 0){
 			echo("<p>Devices from current PAN:</p>");
 			echo("<table border=\"1\">");
@@ -77,54 +71,28 @@
 		//DEVICES THAT BELONG TO THE PREVIOUS PAN
 		$sql2 = "select device_serialnum, device_manufacturer, description, wears_pan
 						from connects, device, wears			
-						where wears_patient = '$patient_request'
-						and wears_end < CURDATE() and wears_end >= all 
-						(select wears_end from wears where wears_end < CURDATE() and wears_patient = '$patient_request')
+						where wears_patient = '$patient_'
+						and wears_end < CURDATE() and wears_end >= all
+						(select wears_end from wears where wears_end < CURDATE())
 						and connects_pan = wears_pan
 						and device_serialnum = connects_snum
 						and device_manufacturer = connects_manuf";
 
 
 		$result2 = $connection->query($sql2);
-		if ($result2 == FALSE){
-			$info = $connection->errorInfo();
-			echo("<p>Error: {$info[2]}</p>");
-			exit();
-		}		
 		$nrows2 = $result2->rowCount();
 
-		//PRINTING TABLE WITH DEVICES FROM LAST PAN
 		if ($nrows2 > 0 and $nrows > 0){
-			echo("<p>Devices from last PAN :</p>");
-			echo("<table border=\"1\">");
-			echo("<tr><td>Serial Number</td><td>Manufacturer</td><td>Description</td></tr>");
-			foreach($result2 as $row){
-					echo("<tr><td>");
-					echo($row['device_serialnum']);
-					echo("</td><td>");
-					echo($row['device_manufacturer']);
-					echo("</td><td>");
-					echo($row['description']);
-					echo("</td></tr>");
-			}
-			echo("</table>");
-			echo("<br />");
+		
 			echo("Choose one or more device(s):");
 			echo("<br />");
-
-			$result3 = $connection->query($sql2);
-			if ($result3 == FALSE){
-				$info = $connection->errorInfo();
-				echo("<p>Error: {$info[2]}</p>");
-				exit();
-			}			
+					$result3 = $connection->query($sql2);
 			foreach($result3 as $row){
 					$manufacturer = $row['device_manufacturer'];
 					$device_serialnum = $row['device_serialnum'];
 					$descrip = $row['description'];
 					$pan_last = $row['wears_pan'];
 
-					//FIND CURRENT PAN FOR A DEVICE	
 					$sql_pan_device = "select connects_pan
 						from connects
 						where connects_end >= all
@@ -132,34 +100,17 @@
 						and connects_end > CURDATE()
 						and connects_snum = '$device_serialnum'
 						and connects_manuf = '$manufacturer'";
+	
 				$result_pan_device = $connection->query($sql_pan_device);
-				if ($result_pan_device == FALSE){
-					$info = $connection->errorInfo();
-					echo("<p>Error: {$info[2]}</p>");
-					exit();
-				}
-						
+				echo("<p>Error: $pan_actual</p>");
 				foreach($result_pan_device as $row_pan_device){
 						$current_pan_device = $row_pan_device['connects_pan'];
-
+						echo var_dump($row_pan_device['connects_pan'])."<br/>";
+						echo("<p>111111: $current_pan_device</p>");
 				}
-				$sql_test = "select wears_end
-							from wears
-							where wears_pan = '$current_pan_device'
-							and wears_end >= all
-							(select wears_end from wears where wears_pan = '$current_pan_device')";
-				
-				$result_end_test = $connection->query($sql_test);
-				foreach($result_end_test as $row_end_test){
-				$current_end_test = $row_end_test['wears_end'];
-				}	
-echo("<p>Error: $current_end_test</p>");
-$teste = strtotime($current_end_test);
-				//if($current_pan != $current_pan_device and ($current_end_test < CURDATE()) )
-				//CHECKBOXES TO SELECT DEVICES TO TRANSFER
-				if( ($pan_actual != $current_pan_device) and ($teste < CURDATE()) ){
-					echo"<input type='checkbox' name='Device[]' value='$device_serialnum|$manufacturer'>  $device_serialnum - $manufacturer - $descrip <br />";
-				}
+					if( $pan_actual != $current_pan_device ){
+						echo"<input type='checkbox' name='Device[]' value='$device_serialnum|$manufacturer'>  $device_serialnum - $manufacturer - $descrip <br />";
+					}
 			}
 
 			echo"<input type='hidden' name='pan_hidden' value='$pan_last'/>";
