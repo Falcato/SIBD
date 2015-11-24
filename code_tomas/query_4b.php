@@ -101,8 +101,7 @@
 						(select wears_end from wears where wears_end < CURDATE())
 						and connects_pan = wears_pan
 						and device_serialnum = connects_snum
-						and device_manufacturer = connects_manuf
-						and connects_pan != '$current_pan'";
+						and device_manufacturer = connects_manuf";
 
 					$result = $connection->query($sql_devices_last);
 				
@@ -135,6 +134,7 @@
 						 				from connects
 						 				where connects_end >= all
 						 				(select connects_end from connects)
+						 				and connects_end > CURDATE()
 						 				and connects_snum = '$device_serialnum'
 						 				and connects_manuf = '$device_manufacturer'";
 
