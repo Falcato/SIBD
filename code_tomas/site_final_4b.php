@@ -26,15 +26,15 @@
 					if( (!empty($_POST['device']))  ) {
 					    foreach($_POST['device'] as $check) {
 					    	$device = explode('|',$check);
-								
+
 							/*RETIRAR TEMPOS DE INCIO E FIM DE UM CERTO DISPOSITIVO QUE VAI SER TROCADO*/
-							$sql_times = "select connects_start, connects_end
+							$sql_times = "select connects.start, connects.end
 									from wears, connects
-									where wears_patient = '$patient_request'
-									and wears_pan = '$last_pan_request'
-									and connects_pan = wears_pan
-									and connects_snum = '$device[0]'
-									and connects_manuf = '$device[1]'";
+									where patient = '$patient_request'
+									and connects.pan = '$last_pan_request'
+									and connects.pan = wears.pan
+									and snum = '$device[0]'
+									and manuf = '$device[1]'";
 
 							$result_times = $connection->query($sql_times);
 							
@@ -44,8 +44,8 @@
 								exit();
 							}
 							foreach($result_times as $row){
-								$start = $row['connects_start'];
-								$end = $row['connects_end'];	
+								$start = $row['start'];
+								$end = $row['end'];	
 							}
 
 							//QUERIES PARA A ALTERAÇÃO DE CADA DEVICE
@@ -55,11 +55,11 @@
 							$sql_insert_periods_2 = "insert into period values (CURDATE(), '2999-12-31')";
 							$result2 = $connection->query($sql_insert_periods_2);
 							
-							$sql_update = "update connects set connects_end = CURDATE()
-										where connects_snum = '$device[0]'
-										and connects_manuf = '$device[1]'
-										and connects_start = '$start'
-										and connects_end = '$end'";
+							$sql_update = "update connects set end = CURDATE()
+										where snum = '$device[0]'
+										and manuf = '$device[1]'
+										and start = '$start'
+										and end = '$end'";
 							$result3 = $connection->query($sql_update);
 							
 							$sql_insert_device = "insert into connects values (CURDATE(), '2999-12-31', '$device[0]', '$device[1]', '$current_pan_request')";
@@ -71,14 +71,14 @@
 
 					/*DEVICES NA PAN ACTUAL ACTUALIZADA*/
 
-					$sql_devices = "select device_serialnum, device_manufacturer, description
+					$sql_devices = "select serialnum, manufacturer, description
 								from device, wears, connects
-								where wears_patient = '$patient_request'
-								and wears_end > CURDATE()
-								and connects_pan = wears_pan
-								and connects_end > CURDATE()
-								and device_serialnum = connects_snum
-								and device_manufacturer = connects_manuf";
+								where wears.patient = '$patient_request'
+								and wears.end > CURDATE()
+								and connects.pan = wears.pan
+								and connects.end > CURDATE()
+								and device.serialnum = connects.snum
+								and device.manufacturer = connects.manuf";
 					
 					$result = $connection->query($sql_devices);
 					
@@ -98,9 +98,9 @@
 					echo("<tr><td>Serial Number</td><td>Manufacturer</td><td>Description</td>");
 					foreach($result as $row){
 							echo("<tr><td>");
-							echo($row['device_serialnum']);
+							echo($row['serialnum']);
 							echo("</td><td>");
-							echo($row['device_manufacturer']);
+							echo($row['manufacturer']);
 							echo("</td><td>");
 							echo($row['description']);
 							echo("</td></tr>");

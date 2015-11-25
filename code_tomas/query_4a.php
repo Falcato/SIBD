@@ -18,28 +18,29 @@
 
 		$patient_request = $_REQUEST['patient_name'];
 
-		$sql_readings = "select patient_number, patient_name, device_serialnum, device_manufacturer, 
-				reading_value, sensor_units, reading_datetime
+		$sql_readings = "select patient.number, name, serialnum, manufacturer, 
+				value, units, datetime
 				
 				from reading
 					join sensor
 					join device
 					join connects
 					join pan
-						on pan_domain = connects_pan
+						on domain = connects.pan
 					join wears
-						on pan_domain = wears_pan
+						on domain = wears.pan
 					join patient
-						on wears_patient = patient_number
+						on wears.patient = patient.number
 
-				where patient_name like '%$patient_request%'
-				and date(reading_datetime) between wears_start and wears_end
-				and reading_snum = device_serialnum
-				and reading_manuf = device_manufacturer	
-				and connects_manuf = device_manufacturer
-				and connects_snum = device_serialnum 
-				and sensor_manuf = device_manufacturer
-				and sensor_snum = device_serialnum";
+				where patient.name like '%$patient_request%'
+				and date(reading.datetime) between wears.start and wears.end
+				and reading.snum = device.serialnum
+				and reading.manuf = device.manufacturer	
+				and connects.manuf = device.manufacturer
+				and connects.snum = device.serialnum 
+				and sensor.manuf = device.manufacturer
+				and sensor.snum = device.serialnum";
+
 		$result = $connection->query($sql_readings);
 		if ($result == FALSE){
 			$info = $connection->errorInfo();
@@ -52,19 +53,19 @@
 			<td>Units</td><td>Date Time</td></tr>");
 		foreach($result as $row){
 				echo("<tr><td>");
-				echo($row['patient_number']);
+				echo($row['number']);
 				echo("</td><td>");
-				echo($row['patient_name']);
+				echo($row['name']);
 				echo("</td><td>");
-				echo($row['device_serialnum']);
+				echo($row['serialnum']);
 				echo("</td><td>");				
-				echo($row['device_manufacturer']);
+				echo($row['manufacturer']);
 				echo("</td><td>");
-				echo($row['reading_value']);
+				echo($row['value']);
 				echo("</td><td>");
-				echo($row['sensor_units']);
+				echo($row['units']);
 				echo("</td><td>");
-				echo($row['reading_datetime']);
+				echo($row['datetime']);
 				echo("</td></tr>");
 		}
 		echo("</table>");
@@ -74,28 +75,29 @@
 
 		/*tabela settings*/
 		
-		$sql_settings = "select patient_number, patient_name, device_serialnum, device_manufacturer, 
-				setting_value, actuator_units, setting_datetime
+		$sql_settings = "select patient.number, patient.name, device.serialnum, device.manufacturer, 
+				setting.value, actuator.units, setting.datetime
 				
 				from setting
 					join actuator
 					join device
 					join connects
 					join pan
-						on pan_domain = connects_pan
+						on pan.domain = connects.pan
 					join wears
-						on pan_domain = wears_pan
+						on pan.domain = wears.pan
 					join patient
-						on wears_patient = patient_number
+						on wears.patient = patient.number
 
-				where patient_name like '%$patient_request%'
-				and date(setting_datetime) between wears_start and wears_end
-				and setting_snum = device_serialnum
-				and setting_manuf = device_manufacturer	
-				and connects_manuf = device_manufacturer
-				and connects_snum = device_serialnum 
-				and actuator_manuf = device_manufacturer
-				and actuator_snum = device_serialnum";
+				where patient.name like '%$patient_request%'
+				and date(setting.datetime) between wears.start and wears.end
+				and setting.snum = device.serialnum
+				and setting.manuf = device.manufacturer	
+				and connects.manuf = device.manufacturer
+				and connects.snum = device.serialnum 
+				and actuator.manuf = device.manufacturer
+				and actuator.snum = device.serialnum";
+				
 		$result = $connection->query($sql_settings);
 		if ($result == FALSE){
 			$info = $connection->errorInfo();
@@ -108,19 +110,19 @@
 			<td>Units</td><td>Date Time</td></tr>");
 		foreach($result as $row){
 				echo("<tr><td>");
-				echo($row['patient_number']);
+				echo($row['number']);
 				echo("</td><td>");
-				echo($row['patient_name']);
+				echo($row['name']);
 				echo("</td><td>");
-				echo($row['device_serialnum']);
+				echo($row['serialnum']);
 				echo("</td><td>");				
-				echo($row['device_manufacturer']);
+				echo($row['manufacturer']);
 				echo("</td><td>");
-				echo($row['setting_value']);
+				echo($row['value']);
 				echo("</td><td>");
-				echo($row['actuator_units']);
+				echo($row['units']);
 				echo("</td><td>");
-				echo($row['setting_datetime']);
+				echo($row['datetime']);
 				echo("</td></tr>");
 		}
 		echo("</table>");

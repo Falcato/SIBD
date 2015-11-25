@@ -31,8 +31,8 @@
 					
 
 					//QUERY DA PAN ACTUAL
-					$sql_pan = "select wears_pan from wears
-								where '$patient_request' = wears_patient";
+					$sql_pan = "select pan from wears
+								where '$patient_request' = patient";
 				
 					$result_pan = $connection->query($sql_pan);
 				
@@ -44,21 +44,21 @@
 					}
 
 					foreach($result_pan as $row){
-						$current_pan = $row['wears_pan'];
+						$current_pan = $row['pan'];
 					}
 					
 					echo("<input type='hidden' name='current_pan_hidden' value='$current_pan'/>");
 
 					/*QUERY DEVICES ACTUAL PAN*/
 
-					$sql_devices = "select device_serialnum, device_manufacturer, description
+					$sql_devices = "select serialnum, manufacturer, description
 								from device, wears, connects
-								where wears_patient = '$patient_request'
-								and wears_end > CURDATE()
-								and connects_pan = wears_pan
-								and connects_end > CURDATE()
-								and device_serialnum = connects_snum
-								and device_manufacturer = connects_manuf";
+								where wears.patient = '$patient_request'
+								and wears.end > CURDATE()
+								and connects.pan = wears.pan
+								and connects.end > CURDATE()
+								and serialnum = snum
+								and manufacturer = manuf";
 				
 					$result = $connection->query($sql_devices);
 				
@@ -81,9 +81,9 @@
 				
 					foreach($result as $row){
 							echo("<tr><td>");
-							echo($row['device_serialnum']);
+							echo($row['serialnum']);
 							echo("</td><td>");
-							echo($row['device_manufacturer']);
+							echo($row['manufacturer']);
 							echo("</td><td>");
 							echo($row['description']);
 							echo("</td></tr>");
@@ -93,18 +93,18 @@
 
 					/*QUERY DEVICES LAST PAN*/					
 
-					$sql_devices_last = "select device_serialnum, device_manufacturer, description, wears_pan
+					$sql_devices_last = "select serialnum, manufacturer, description, wears.pan
 						from connects, device, wears			
-						where wears_patient = '$patient_request'
-						and wears_end < CURDATE() and wears_end >= all
-						(select wears_end from wears where wears_end < CURDATE()
-							and wears_patient = '$patient_request')
-						and connects_pan = wears_pan
-						and device_serialnum = connects_snum
-						and device_manufacturer = connects_manuf
-						and ((connects_start >= wears_start and connects_end <= wears_end)
-							or (connects_start <= wears_start and connects_end >= wears_start)
-							or (connects_start <= wears_end and connects_end >= wears_end))";
+						where patient = '$patient_request'
+						and wears.end < CURDATE() and wears.end >= all
+						(select end from wears where end < CURDATE()
+							and patient = '$patient_request')
+						and connects.pan = wears.pan
+						and serialnum = snum
+						and manufacturer = manuf
+						and ((connects.start >= wears.start and connects.end <= wears.end)
+							or (connects.start <= wears.start and connects.end >= wears.start)
+							or (connects.start <= wears.end and connects.end >= wears.end))";
 
 					$result = $connection->query($sql_devices_last);
 				
@@ -127,36 +127,36 @@
 					echo("<p>Choose the ones you want to move to your actual PAN:</p>");
 				
 					foreach($result as $row){
-						$device_serialnum = $row['device_serialnum'];
-						$device_manufacturer = $row['device_manufacturer'];
+						$device_serialnum = $row['serialnum'];
+						$device_manufacturer = $row['manufacturer'];
 						$description = $row['description'];
-						$last_pan = $row['wears_pan'];
+						$last_pan = $row['pan'];
 
 
 						//QUERY PARA A PAN ACTUAL DO DEVICE
-						$sql_pan_device = "select connects_pan
+						$sql_pan_device = "select pan
 						 				from connects
-						 				where connects_end >= all
-						 				(select connects_end from connects)
-						 				and connects_end > CURDATE()
-						 				and connects_snum = '$device_serialnum'
-						 				and connects_manuf = '$device_manufacturer'";
+						 				where end >= all
+						 				(select end from connects)
+						 				and end > CURDATE()
+						 				and snum = '$device_serialnum'
+						 				and manuf = '$device_manufacturer'";
 
 						$result_pan_device = $connection->query($sql_pan_device);
 						foreach($result_pan_device as $row_pan_device){
-							$current_pan_device = $row_pan_device['connects_pan'];
+							$current_pan_device = $row_pan_device['pan'];
 						}
 
-						$sql_user_device = "select wears_end
+						$sql_user_device = "select end
 										from wears
-										where wears_end >= all
-						 				(select wears_end from wears
-						 					where wears_pan = '$current_pan_device')
-										and wears_pan = '$current_pan_device'";
+										where end >= all
+						 				(select end from wears
+						 					where pan = '$current_pan_device')
+										and pan = '$current_pan_device'";
 
 						$result_user_device = $connection->query($sql_user_device);
 						foreach($result_user_device as $row_user_device){
-							$current_user_device = $row_user_device['wears_end'];
+							$current_user_device = $row_user_device['end'];
 						}
 
 					    $time_of_device = strtotime($current_user_device);

@@ -26,8 +26,8 @@
 								$patient_request = $_REQUEST['patient_name'];
 								
 
-								$sql_patient = "select patient_number, patient_name from patient
-								where patient_name like '%$patient_request%'";	
+								$sql_patient = "select number, name from patient
+								where name like '%$patient_request%'";	
 								$result = $connection->query($sql_patient);
 								$nrows = $result->ROWCOUNT();
 								if ($result == FALSE){
@@ -42,8 +42,8 @@
 								}
 								
 								foreach($result as $row){
-									$patient_number = $row['patient_number'];
-									$patient_name = $row['patient_name'];
+									$patient_number = $row['number'];
+									$patient_name = $row['name'];
 									echo("<input type=\"radio\" name = \"patient_number\" value=\"$patient_number\" checked=\"checked\"> $patient_number  $patient_name<br/>");
 								}
 								$connection = null;

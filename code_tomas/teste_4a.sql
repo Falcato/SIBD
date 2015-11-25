@@ -56,7 +56,7 @@ insert into connects values ('2012-01-01', '2999-12-31', 77, 'philips', 'pan3');
 insert into connects values ('2012-01-01', '2999-12-31', 44, 'philips', 'pan3');
 insert into connects values ('2012-01-01', '2999-12-31', 33, 'philips', 'pan3');
 insert into connects values ('2012-01-01', '2999-12-31', 11, 'rip curl', 'pan5');
-update connects set connects_end = '2015-11-17' where connects_snum = 55 and connects_manuf = 'nokia'; 
+update connects set connects.end = '2015-11-17' where connects.snum = 55 and connects.manuf = 'nokia'; 
 insert into connects values ('2015-11-17', '2999-12-31', 55, 'nokia', 'pan2');
 
 
@@ -70,10 +70,10 @@ insert into period values ('2015-06-30', '2999-05-31');
 
 
 
-update wears set wears_end = '2015-03-30' where wears_patient = 2 and wears_pan = 'pan3';
-update wears set wears_end = '2015-03-30' where wears_patient = 4 and wears_pan = 'pan2';
+update wears set wears.end = '2015-03-30' where wears.patient = 2 and wears.pan = 'pan3';
+update wears set wears.end = '2015-03-30' where wears.patient = 4 and wears.pan = 'pan2';
 insert into wears values ('2015-03-30', '2999-12-31', 4, 'pan3');
-update wears set wears_end = '2015-05-30' where wears_patient = 4 and wears_pan = 'pan3';
+update wears set wears.end = '2015-05-30' where wears.patient = 4 and wears.pan = 'pan3';
 
 
 /*EXEMPLO 1*/
@@ -86,14 +86,14 @@ insert into connects values ('2015-05-31', '2999-05-31', 66, 'philips', 'pan3');
 /*EXEMPLO 2*/
 insert into period values ('2012-01-01', '2015-06-10');
 insert into period values ('2015-06-11', '2999-12-31');
-update connects set connects_end = '2015-06-10' where connects_snum = 33 and connects_manuf = 'philips' and connects_start = '2012-01-01'; 
+update connects set connects.end = '2015-06-10' where connects.snum = 33 and connects.manuf = 'philips' and connects.start = '2012-01-01'; 
 insert into connects values ('2015-06-11', '2999-12-31', 33, 'philips', 'pan1');
 /*FIM DO EXEMPLO 2*/
 
 
 insert into period values ('2015-05-31', '2015-06-15');
 
-update wears set wears_end = '2015-06-15' where wears_patient = 2 and wears_pan = 'pan3' and wears_start = '2015-05-31';
+update wears set wears.end = '2015-06-15' where wears.patient = 2 and wears.pan = 'pan3' and wears.start = '2015-05-31';
 
 /*FIM DO EXEMPLO 1*/
 
