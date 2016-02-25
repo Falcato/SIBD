@@ -32,8 +32,7 @@ create trigger check_overlapping_periods_connects_insert before insert on connec
 for each row
 begin
 
-	if new.start < some (select connects.end from connects where new.snum = connects.snum and new.manuf = connects.manuf) then 	/*PERGUNTAR AO PROF SE PRECISAMOS DE VER OS TEMPOS*/
-			
+	if new.start < some (select connects.end from connects where new.snum = connects.snum and new.manuf = connects.manuf) then 
 		call pan_already_in_use_3();
 		
 	end if;

@@ -34,6 +34,7 @@
 
 				where patient.name like '%$patient_request%'
 				and date(reading.datetime) between wears.start and wears.end
+				and date(reading.datetime) between connects.start and connects.end
 				and reading.snum = device.serialnum
 				and reading.manuf = device.manufacturer	
 				and connects.manuf = device.manufacturer
@@ -47,29 +48,33 @@
 			echo("<p>Error: {$info[2]}</p>");
 			exit();
 		}
-		echo("<table border=\"1\">");
-		echo("<tr><td>Patient Number</td><td>Patient Name</td><td>Device Serial Number</td>
-			<td>Device Manufacturer</td><td>Readings</td>
-			<td>Units</td><td>Date Time</td></tr>");
-		foreach($result as $row){
-				echo("<tr><td>");
-				echo($row['number']);
-				echo("</td><td>");
-				echo($row['name']);
-				echo("</td><td>");
-				echo($row['serialnum']);
-				echo("</td><td>");				
-				echo($row['manufacturer']);
-				echo("</td><td>");
-				echo($row['value']);
-				echo("</td><td>");
-				echo($row['units']);
-				echo("</td><td>");
-				echo($row['datetime']);
-				echo("</td></tr>");
-		}
-		echo("</table>");
+		$nrows = $result->rowCount();
+		if ($nrows >0){
 
+			echo("<table border=\"1\">");
+			echo("<tr><td>Patient Number</td><td>Patient Name</td><td>Device Serial Number</td>
+				<td>Device Manufacturer</td><td>Readings</td>
+				<td>Units</td><td>Date Time</td></tr>");
+			foreach($result as $row){
+					echo("<tr><td>");
+					echo($row['number']);
+					echo("</td><td>");
+					echo($row['name']);
+					echo("</td><td>");
+					echo($row['serialnum']);
+					echo("</td><td>");				
+					echo($row['manufacturer']);
+					echo("</td><td>");
+					echo($row['value']);
+					echo("</td><td>");
+					echo($row['units']);
+					echo("</td><td>");
+					echo($row['datetime']);
+					echo("</td></tr>");
+			}
+			echo("</table>");
+		}
+		
 		echo("<br />");
 		echo("<br />");
 
@@ -91,41 +96,46 @@
 
 				where patient.name like '%$patient_request%'
 				and date(setting.datetime) between wears.start and wears.end
+				and date(setting.datetime) between connects.start and connects.end
 				and setting.snum = device.serialnum
 				and setting.manuf = device.manufacturer	
 				and connects.manuf = device.manufacturer
 				and connects.snum = device.serialnum 
 				and actuator.manuf = device.manufacturer
 				and actuator.snum = device.serialnum";
-				
+
 		$result = $connection->query($sql_settings);
 		if ($result == FALSE){
 			$info = $connection->errorInfo();
 			echo("<p>Error: {$info[2]}</p>");
 			exit();
 		}
+		$nrows = $result->rowCount();
+		if ($nrows >0){
+
 		echo("<table border=\"1\">");
-		echo("<tr><td>Patient Number</td><td>Patient Name</td><td>Device Serial Number</td>
-			<td>Device Manufacturer</td><td>Settings</td>
-			<td>Units</td><td>Date Time</td></tr>");
-		foreach($result as $row){
-				echo("<tr><td>");
-				echo($row['number']);
-				echo("</td><td>");
-				echo($row['name']);
-				echo("</td><td>");
-				echo($row['serialnum']);
-				echo("</td><td>");				
-				echo($row['manufacturer']);
-				echo("</td><td>");
-				echo($row['value']);
-				echo("</td><td>");
-				echo($row['units']);
-				echo("</td><td>");
-				echo($row['datetime']);
-				echo("</td></tr>");
+			echo("<tr><td>Patient Number</td><td>Patient Name</td><td>Device Serial Number</td>
+				<td>Device Manufacturer</td><td>Settings</td>
+				<td>Units</td><td>Date Time</td></tr>");
+			foreach($result as $row){
+					echo("<tr><td>");
+					echo($row['number']);
+					echo("</td><td>");
+					echo($row['name']);
+					echo("</td><td>");
+					echo($row['serialnum']);
+					echo("</td><td>");				
+					echo($row['manufacturer']);
+					echo("</td><td>");
+					echo($row['value']);
+					echo("</td><td>");
+					echo($row['units']);
+					echo("</td><td>");
+					echo($row['datetime']);
+					echo("</td></tr>");
+			}
+			echo("</table>");
 		}
-		echo("</table>");
 
 
 	$connection = null;
